@@ -28,4 +28,8 @@ if __name__ == "__main__":
     parser.add_argument('grid_width', type=int, nargs='?', default=40, help='Width of the grid')
     args = parser.parse_args()
 
+    if args.grid_height <= 0 or args.grid_width <= 0:
+        print("Error: Both grid height and width must be greater than 0.")
+        exit(1)
+
     main(args.grid_height, args.grid_width)
