@@ -28,7 +28,7 @@ class Grid:
     def _create_random_grid(self) -> list:
         return [[create_random_cell() for _ in range(self.grid_width)] for _ in range(self.grid_height)]
 
-    def _cell_in_grid(self, cell: Cell) -> bool:
+    def cell_in_grid(self, cell: Cell) -> bool:
         cell_is_outside_row: bool = cell.row < 0 or cell.row >= self.grid_height
         cell_is_outside_column: bool = cell.column < 0 or cell.column >= self.grid_width
 
@@ -36,8 +36,13 @@ class Grid:
             return False
         return True
 
+
+class GridUpdater:
+    def __init__(self, grid: Grid) -> None:
+        self.grid = grid
+
     def _valid_neighbour(self, grid: List[List[str]], cell: Cell, head_cell: Cell) -> bool:
-        if not self._cell_in_grid(cell):
+        if not self.grid.cell_in_grid(cell):
             return False
 
         if cell == head_cell:
@@ -54,11 +59,11 @@ class Grid:
 
     def _update_full_cell(self, cell: Cell, neighbours_count: int) -> None:
         if neighbours_count < 2 or neighbours_count > 3:
-            self.grid[cell.row][cell.column] = EMPTY_CELL
+            self.grid.grid[cell.row][cell.column] = EMPTY_CELL
 
     def _update_empty_cell(self, cell: Cell, neighbours_count: int) -> None:
         if neighbours_count == 3:
-            self.grid[cell.row][cell.column] = FULL_CELL
+            self.grid.grid[cell.row][cell.column] = FULL_CELL
 
     def _update_cell(self, temp_grid: List[List[str]], cell: Cell) -> None:
         neighbours_count: int = self._count_neighbours(temp_grid, cell)
@@ -68,13 +73,13 @@ class Grid:
         else:
             self._update_empty_cell(cell, neighbours_count)
 
-    def update_grid(self) -> list:
-        # We have to use deepcopy here, because if we just assign self.grid to temporary_grid,
-        # then we will be modifying self.grid as we iterate over it.
-        temporary_grid: List[List[str]] = copy.deepcopy(self.grid)
+    @classmethod
+    def update_grid(cls, grid: Grid) -> list:
+        instance = cls(grid)
+        temporary_grid: List[List[str]] = copy.deepcopy(instance.grid.grid)
 
-        for row in range(self.grid_height):
-            for column in range(self.grid_width):
-                self._update_cell(temporary_grid, Cell(row, column))
+        for row in range(instance.grid.grid_height):
+            for column in range(instance.grid.grid_width):
+                instance._update_cell(temporary_grid, Cell(row, column))
 
-        return self.grid
+        return instance.grid.grid

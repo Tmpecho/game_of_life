@@ -1,7 +1,7 @@
 import time
 import os
 
-from grid import Grid
+from grid import Grid, GridUpdater
 from visualize import print_grid
 
 UPDATE_SPEED_SECONDS: float = 0.1
@@ -16,7 +16,7 @@ def main() -> None:
 
         time.sleep(UPDATE_SPEED_SECONDS)
         os.system("clear")
-        grid.update_grid()
+        GridUpdater.update_grid(grid)
 
         generation_number += 1
 
