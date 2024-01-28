@@ -1,5 +1,5 @@
-from ..visualize import count_all_cells, print_generation_information
 from ..grid import Grid, FULL_CELL
+from ..visualize import count_all_cells, print_generation_information
 
 
 def test_count_all_cells():

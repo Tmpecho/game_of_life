@@ -1,6 +1,6 @@
 import pytest
 
-from ..grid import Grid, Cell, EMPTY_CELL, FULL_CELL, CellAnalyzer, create_random_cell
+from ..grid import Grid, Cell, EMPTY_CELL, FULL_CELL, CellAnalyzer
 
 
 @pytest.fixture
@@ -30,7 +30,7 @@ def test_grid_initialization():
 
 
 def test_create_random_cell():
-    cells = [create_random_cell() for _ in range(100)]
+    cells = [Grid._create_random_cell() for _ in range(100)]
     assert all(cell in [EMPTY_CELL, FULL_CELL] for cell in cells)
 
 
@@ -41,5 +41,5 @@ def test_grid_size():
 
 
 def test_cell_life_probability():
-    cells = [create_random_cell() for _ in range(1000)]
+    cells = [Grid._create_random_cell() for _ in range(1000)]
     assert 100 <= cells.count(FULL_CELL) <= 200
