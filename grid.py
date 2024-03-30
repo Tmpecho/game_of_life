@@ -55,6 +55,7 @@ class CellAnalyzer:
 
         if cell_is_outside_row or cell_is_outside_column:
             return False
+
         return True
 
 
