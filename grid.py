@@ -18,7 +18,7 @@ class Grid:
     def __init__(self, grid_height: int = 40, grid_width: int = 40) -> None:
         self.grid_height: int = grid_height
         self.grid_width: int = grid_width
-        self.grid: List[List[str]] = self._create_random_grid
+        self.cell_matrix: List[List[str]] = self._create_random_grid  # The grid itself and not the object
 
     @property
     def _create_random_grid(self) -> list:
@@ -35,12 +35,12 @@ class CellAnalyzer:
 
     def count_neighbours(self, grid: List[List[str]], head_cell: Cell) -> int:
         return [
-            self._valid_neighbour(grid, Cell(row, column), head_cell)
+            self._is_valid_neighbour(grid, Cell(row, column), head_cell)
             for row in [head_cell.row - 1, head_cell.row, head_cell.row + 1]
             for column in [head_cell.column - 1, head_cell.column, head_cell.column + 1]
         ].count(True)
 
-    def _valid_neighbour(self, grid: List[List[str]], cell: Cell, head_cell: Cell) -> bool:
+    def _is_valid_neighbour(self, grid: List[List[str]], cell: Cell, head_cell: Cell) -> bool:
         if not self._cell_in_grid(cell):
             return False
 
@@ -65,28 +65,26 @@ class GridUpdater:
         self.cell_analyzer: CellAnalyzer = CellAnalyzer(grid)
 
     @classmethod
-    def update_grid(cls, grid: Grid) -> list:
+    def update_grid(cls, grid: Grid) -> None:
         instance: GridUpdater = cls(grid)
-        temporary_grid: List[List[str]] = copy.deepcopy(instance.grid.grid)
+        temporary_grid: List[List[str]] = copy.deepcopy(instance.grid.cell_matrix)
 
         for row in range(instance.grid.grid_height):
             for column in range(instance.grid.grid_width):
                 instance._update_cell(temporary_grid, Cell(row, column))
 
-        return instance.grid.grid
+    def _update_cell(self, grid: List[List[str]], cell: Cell) -> None:
+        number_of_neighbours: int = self.cell_analyzer.count_neighbours(grid, cell)
 
-    def _update_full_cell(self, cell: Cell, neighbours_count: int) -> None:
-        if neighbours_count < 2 or neighbours_count > 3:
-            self.grid.grid[cell.row][cell.column] = EMPTY_CELL
-
-    def _update_empty_cell(self, cell: Cell, number_of_neighbours: int) -> None:
-        if number_of_neighbours == 3:
-            self.grid.grid[cell.row][cell.column] = FULL_CELL
-
-    def _update_cell(self, temp_grid: List[List[str]], cell: Cell) -> None:
-        number_of_neighbours: int = self.cell_analyzer.count_neighbours(temp_grid, cell)
-
-        if temp_grid[cell.row][cell.column] == FULL_CELL:
+        if grid[cell.row][cell.column] == FULL_CELL:
             self._update_full_cell(cell, number_of_neighbours)
         else:
             self._update_empty_cell(cell, number_of_neighbours)
+
+    def _update_full_cell(self, cell: Cell, neighbours_count: int) -> None:
+        if neighbours_count < 2 or neighbours_count > 3:
+            self.grid.cell_matrix[cell.row][cell.column] = EMPTY_CELL
+
+    def _update_empty_cell(self, cell: Cell, number_of_neighbours: int) -> None:
+        if number_of_neighbours == 3:
+            self.grid.cell_matrix[cell.row][cell.column] = FULL_CELL

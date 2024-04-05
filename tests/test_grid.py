@@ -24,9 +24,9 @@ def test_create_random_grid(grid):
 
 def test_grid_initialization():
     grid = Grid(5, 5)
-    assert len(grid.grid) == 5
-    assert len(grid.grid[0]) == 5
-    assert all(cell in [EMPTY_CELL, FULL_CELL] for row in grid.grid for cell in row)
+    assert len(grid.cell_matrix) == 5
+    assert len(grid.cell_matrix[0]) == 5
+    assert all(cell in [EMPTY_CELL, FULL_CELL] for row in grid.cell_matrix for cell in row)
 
 
 def test_create_random_cell():
@@ -36,8 +36,8 @@ def test_create_random_cell():
 
 def test_grid_size():
     grid = Grid(5, 5)
-    assert len(grid.grid) == 5
-    assert all(len(row) == 5 for row in grid.grid)
+    assert len(grid.cell_matrix) == 5
+    assert all(len(row) == 5 for row in grid.cell_matrix)
 
 
 def test_cell_life_probability():
